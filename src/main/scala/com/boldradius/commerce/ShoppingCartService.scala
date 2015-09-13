@@ -71,15 +71,11 @@ class ShoppingCartService(catalog:Catalog, deals: Deals) {
      * calculate the price of items when discount bundles are applied
      */
     def calculatePrice(bundles: Map[Bundle, Int]) = {
-      val itemPrice = removeItems(items.toMap, bundleItems(bundles).toList).map {
+      removeItems(items.toMap, bundleItems(bundles).toList).map {
         case (i:Item, n:Int) => n * catalog.prices(i)
-      }.sum
-
-      val bundlePrice = bundles.map {
+      }.sum + bundles.map {
         case (b:Bundle, n:Int) => n * deals.prices(b)
       }.sum
-      val total = itemPrice + bundlePrice
-      total
     }
     validCombinations(items.toMap).map(calculatePrice(_)).min
   }
